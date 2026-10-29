@@ -35,6 +35,34 @@ export const findAlternativesTool: Tool = {
   },
 };
 
+/**
+ * Flights on the same route as `original` that pass rebooking rules R1 (bookable
+ * status), R3 (within the rebooking window) and R4 (seats left in some cabin),
+ * excluding `original` itself. Sorted earliest departure first.
+ */
+export function getBookableAlternatives(original: Flight): Flight[] {
+  const { bookable_alternative_statuses, rebooking_window_hours } =
+    policiesRepository.getGeneralPolicy();
+
+  const originalDeparture = new Date(original.scheduled_departure).getTime();
+  const windowEnd = originalDeparture + rebooking_window_hours * 60 * 60 * 1000;
+
+  return flightsRepository
+    .findByRoute(original.origin.code, original.destination.code)
+    .filter((f) => {
+      if (f.id === original.id) return false;
+      if (!bookable_alternative_statuses.includes(f.status)) return false;
+      const departure = new Date(f.scheduled_departure).getTime();
+      if (departure < originalDeparture || departure > windowEnd) return false;
+      return f.seats_left.economy > 0 || f.seats_left.business > 0;
+    })
+    .sort(
+      (a, b) =>
+        new Date(a.scheduled_departure).getTime() -
+        new Date(b.scheduled_departure).getTime()
+    );
+}
+
 export function findAlternatives(
   input: FindAlternativesInput
 ): FindAlternativesResult {
@@ -62,26 +90,7 @@ export function findAlternatives(
   }
 
   const original = matches[0];
-  const { bookable_alternative_statuses, rebooking_window_hours } =
-    policiesRepository.getGeneralPolicy();
-
-  const originalDeparture = new Date(original.scheduled_departure).getTime();
-  const windowEnd = originalDeparture + rebooking_window_hours * 60 * 60 * 1000;
-
-  const alternatives = flightsRepository
-    .findByRoute(original.origin.code, original.destination.code)
-    .filter((f) => {
-      if (f.id === original.id) return false;
-      if (!bookable_alternative_statuses.includes(f.status)) return false;
-      const departure = new Date(f.scheduled_departure).getTime();
-      if (departure < originalDeparture || departure > windowEnd) return false;
-      return f.seats_left.economy > 0 || f.seats_left.business > 0;
-    })
-    .sort(
-      (a, b) =>
-        new Date(a.scheduled_departure).getTime() -
-        new Date(b.scheduled_departure).getTime()
-    );
+  const alternatives = getBookableAlternatives(original);
 
   if (alternatives.length === 0) {
     return {
