@@ -29,6 +29,7 @@ export interface Flight {
 
 export interface IFlightsRepository {
   findByFlightNumber(flightNumber: string, date?: string): Flight[];
+  findByRoute(originCode: string, destinationCode: string): Flight[];
 }
 
 const flightsData: { flights: Flight[] } = JSON.parse(
@@ -40,6 +41,12 @@ class FlightsRepository implements IFlightsRepository {
     const normalized = flightNumber.toUpperCase();
     return flightsData.flights.filter(
       (f) => f.flight_number === normalized && (!date || f.date === date)
+    );
+  }
+
+  findByRoute(originCode: string, destinationCode: string): Flight[] {
+    return flightsData.flights.filter(
+      (f) => f.origin.code === originCode && f.destination.code === destinationCode
     );
   }
 }
