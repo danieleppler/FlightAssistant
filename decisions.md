@@ -55,3 +55,26 @@ turn resumes from the last known-good state rather than a broken one.
 out of tool-use rounds. Today that case isn't specially detected — a truncated
 answer would currently be returned to the passenger as-is. This is a known gap,
 not yet addressed.
+
+## Per-client token usage throttling
+
+**Context:** nothing stopped a single client from running up unbounded Anthropic
+API cost by sending unlimited `/chat` messages.
+
+**Decision:** track cumulative token usage (`input_tokens` + `output_tokens` from
+each Anthropic response) per `booking_number`, in a rolling 24h window. Once a
+booking crosses `MAX_TOKENS_PER_WINDOW`, `/chat` rejects further requests for
+that booking with `429` until the window resets — checked before `runAgent` is
+even called, so an over-budget request costs nothing further.
+
+**Why `booking_number` and not `session_id`:** it throttles per passenger/flight,
+not per browser tab — multiple tabs or devices on the same booking share one
+budget, which better reflects "this client" than a tab-scoped session would.
+
+**Current implementation:** in-memory `Map` (`tokenUsageTracker.ts`), same
+pattern as the session store, with a periodic sweep to evict expired windows.
+
+**At scale:** this resets on server restart and doesn't work across multiple
+server instances — acceptable for a single-process demo, but a real deployment
+would move this counter to Redis (or a DB) so usage is shared and durable across
+all instances, the same caveat noted for the session store.

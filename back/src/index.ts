@@ -5,6 +5,7 @@ import cors from "cors";
 import { flightsRepository } from "./repositories/flightsRepository";
 import { isValidFlightNumber, isValidDateFormat } from "./validators/flightInput";
 import { runAgent } from "./agent/agent";
+import { isOverBudget } from "./agent/tokenUsageTracker";
 
 const SESSION_ID_PATTERN = /^[\w-]{1,100}$/;
 
@@ -60,6 +61,10 @@ app.post("/chat", async (req, res) => {
     // Status is read from our own flight record, never trusted from the client —
     // otherwise a caller could claim any status for the agent to act on.
     const status = matches[0].status;
+
+    if (isOverBudget(bookingNumber.toUpperCase())) {
+        return res.status(429).json({ error: "Usage limit reached for this booking. Please try again later." });
+    }
 
     const sessionId =
         typeof sessionIdInput === "string" && SESSION_ID_PATTERN.test(sessionIdInput)

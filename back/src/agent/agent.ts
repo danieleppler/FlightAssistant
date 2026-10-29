@@ -7,6 +7,7 @@ import type {
 } from "@anthropic-ai/sdk/resources/messages";
 import { tools, toolHandlers } from "./tools";
 import { getHistory, saveHistory } from "./sessionStore";
+import { recordUsage } from "./tokenUsageTracker";
 
 const anthropic = new Anthropic();
 
@@ -57,6 +58,8 @@ export async function runAgent(
     });
 
     console.log(`[agent] session=${sessionId} round=${round} stop_reason=${response.stop_reason}`);
+
+    recordUsage(bookingNumber.toUpperCase(), response.usage.input_tokens + response.usage.output_tokens);
 
     if (response.stop_reason !== "tool_use") {
       messages.push({ role: "assistant", content: response.content });
