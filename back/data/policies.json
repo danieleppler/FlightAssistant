@@ -1,0 +1,223 @@
+{
+    "meta": {
+        "description": "Mock rebooking and passenger-rights policy for the flight disruption assistant demo. Fictional rules for DemoAir, loosely inspired by common airline practice. Not a real airline's policy.",
+        "airline": {
+            "code": "DM",
+            "name": "DemoAir"
+        },
+        "currency": "USD",
+        "version": "1.0"
+    },
+    "general": {
+        "rebooking_window_hours": 48,
+        "same_route_only": true,
+        "bookable_alternative_statuses": [
+            "on_time",
+            "delayed"
+        ],
+        "significant_delay_minutes": 180,
+        "minimum_connection_minutes": 90
+    },
+    "disruption_types": {
+        "cancelled": {
+            "description": "The original flight will not operate.",
+            "counts_as_disruption": true,
+            "assistant_can_rebook": true
+        },
+        "delayed": {
+            "description": "The original flight operates late. Counts as a disruption only from significant_delay_minutes.",
+            "counts_as_disruption": "when delay_minutes >= significant_delay_minutes",
+            "assistant_can_rebook": true
+        },
+        "diverted": {
+            "description": "The flight landed at a different airport. Onward travel is arranged by a service agent at the diversion airport.",
+            "counts_as_disruption": true,
+            "assistant_can_rebook": false,
+            "handoff": "human_agent",
+            "handoff_message": "Your flight was diverted, so a DemoAir service agent at the airport will arrange your onward travel. I can't rebook diverted flights."
+        },
+        "none": {
+            "description": "No disruption. The passenger wants to change flights voluntarily.",
+            "counts_as_disruption": false,
+            "assistant_can_rebook": true
+        }
+    },
+    "disruption_reasons": {
+        "airline_controlled": [
+            "Aircraft technical issue",
+            "Crew scheduling",
+            "Late arrival of incoming aircraft"
+        ],
+        "extraordinary": [
+            "Weather at destination",
+            "Fog at destination",
+            "Airport strike at destination",
+            "Air traffic control restrictions"
+        ]
+    },
+    "fare_classes": {
+        "basic": {
+            "name": "Basic",
+            "cabin": "economy",
+            "voluntary_change": "not_allowed",
+            "change_fee": null,
+            "upgrade_to_business": "not_allowed",
+            "upgrade_fee": null,
+            "voluntary_refund": false
+        },
+        "standard": {
+            "name": "Standard",
+            "cabin": "economy",
+            "voluntary_change": "fee",
+            "change_fee": 75,
+            "upgrade_to_business": "fee",
+            "upgrade_fee": 350,
+            "voluntary_refund": false
+        },
+        "flex": {
+            "name": "Flex",
+            "cabin": "economy",
+            "voluntary_change": "free",
+            "change_fee": 0,
+            "upgrade_to_business": "fee",
+            "upgrade_fee": 200,
+            "voluntary_refund": true
+        },
+        "business": {
+            "name": "Business",
+            "cabin": "business",
+            "voluntary_change": "free",
+            "change_fee": 0,
+            "upgrade_to_business": "not_applicable",
+            "upgrade_fee": null,
+            "voluntary_refund": true
+        }
+    },
+    "rebooking_rules": [
+        {
+            "id": "R1_not_bookable",
+            "order": 1,
+            "applies_when": "The alternative's status is not in general.bookable_alternative_statuses.",
+            "verdict": "not_eligible",
+            "message": "This flight is not open for booking."
+        },
+        {
+            "id": "R2_different_route",
+            "order": 2,
+            "applies_when": "The alternative's origin or destination differs from the original flight.",
+            "verdict": "not_eligible",
+            "message": "Rebooking is only possible on the same route."
+        },
+        {
+            "id": "R3_outside_window",
+            "order": 3,
+            "applies_when": "The alternative departs before the original scheduled departure, or more than general.rebooking_window_hours after it.",
+            "verdict": "not_eligible",
+            "message": "This flight is outside the 48-hour rebooking window."
+        },
+        {
+            "id": "R4_no_seats",
+            "order": 4,
+            "applies_when": "The alternative has no seats in the passenger's cabin and no business seats.",
+            "verdict": "not_eligible",
+            "message": "This flight is sold out."
+        },
+        {
+            "id": "R5_disrupted_same_cabin",
+            "order": 5,
+            "applies_when": "The trip is disrupted (cancelled, or delayed by at least general.significant_delay_minutes) and the alternative has seats in the passenger's cabin.",
+            "verdict": "free",
+            "fee": 0,
+            "message": "Free rebooking because your original flight was {disruption}."
+        },
+        {
+            "id": "R6_voluntary_same_cabin",
+            "order": 6,
+            "applies_when": "The trip is not disrupted (no disruption, or a delay under general.significant_delay_minutes) and the alternative has seats in the passenger's cabin.",
+            "verdict": "from fare_classes[fare].voluntary_change: free -> free, fee -> fee (change_fee), not_allowed -> not_eligible",
+            "message": {
+                "free": "Free change, included in your {fare_name} fare.",
+                "fee": "Change fee of {fee} USD under your {fare_name} fare.",
+                "not_eligible": "Your {fare_name} fare does not allow changes for this delay."
+            }
+        },
+        {
+            "id": "R7_upgrade_only",
+            "order": 7,
+            "applies_when": "The alternative has no seats in the passenger's economy cabin but has business seats. Applies whether or not the trip is disrupted.",
+            "verdict": "from fare_classes[fare].upgrade_to_business: fee -> fee (upgrade_fee), not_allowed -> not_eligible",
+            "message": {
+                "fee": "Only business seats are left. Upgrade fee of {fee} USD under your {fare_name} fare.",
+                "not_eligible": "Only business seats are left, and your {fare_name} fare cannot be upgraded."
+            }
+        }
+    ],
+    "entitlements": {
+        "wait_time_definition": "For a delay: delay_minutes. For a cancellation: minutes from the original scheduled departure to the departure of the earliest alternative that passes rules R1 to R4 (bookable, same route, inside the window, has seats in any cabin), regardless of the passenger's fare. If there is no such alternative, the wait is unknown and only refund (and compensation, if eligible) applies.",
+        "meal_voucher": {
+            "description": "Voucher for food and drink at the airport while waiting.",
+            "applies_to": [
+                "cancelled",
+                "delayed"
+            ],
+            "applies_regardless_of_reason": true,
+            "tiers": [
+                {
+                    "min_wait_minutes": 120,
+                    "amount": 15
+                },
+                {
+                    "min_wait_minutes": 240,
+                    "amount": 30
+                }
+            ]
+        },
+        "hotel_night": {
+            "description": "One hotel night including airport transfers.",
+            "applies_to": [
+                "cancelled",
+                "delayed"
+            ],
+            "applies_regardless_of_reason": true,
+            "applies_when": "The earliest alternative that passes rules R1 to R4 departs on a later calendar day (local time at origin) than the original flight."
+        },
+        "refund": {
+            "description": "Full refund of the unused ticket, instead of rebooking.",
+            "applies_when": "The flight is cancelled (any reason), or delayed by at least min_delay_minutes.",
+            "min_delay_minutes": 300,
+            "applies_regardless_of_reason": true
+        },
+        "compensation": {
+            "description": "Fixed cash compensation, in addition to rebooking or refund.",
+            "applies_when": "The disruption reason is airline_controlled AND (the flight is cancelled, or delayed by at least min_delay_minutes). Never for extraordinary reasons.",
+            "min_delay_minutes": 180,
+            "bands_by_distance_km": [
+                {
+                    "max_km": 1500,
+                    "amount": 250
+                },
+                {
+                    "max_km": 3500,
+                    "amount": 400
+                },
+                {
+                    "max_km": null,
+                    "amount": 600
+                }
+            ]
+        }
+    },
+    "route_distances_km": {
+        "TLV-CDG": 3290,
+        "CDG-TLV": 3290,
+        "TLV-LHR": 3570,
+        "TLV-FCO": 2290,
+        "TLV-ATH": 1200,
+        "TLV-JFK": 9120,
+        "TLV-FRA": 2950,
+        "TLV-BKK": 7050,
+        "TLV-SCQ": 4040,
+        "TLV-BCN": 3070,
+        "TLV-BER": 2850
+    }
+}

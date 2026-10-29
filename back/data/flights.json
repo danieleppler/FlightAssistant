@@ -1,0 +1,606 @@
+{
+    "meta": {
+        "description": "Mock flight data for the flight disruption assistant demo. Fictional airline, not real schedules.",
+        "airline": {
+            "code": "DM",
+            "name": "DemoAir"
+        },
+        "reference_now": "2026-11-05T10:00+02:00",
+        "statuses": [
+            "on_time",
+            "delayed",
+            "cancelled",
+            "boarding",
+            "departed",
+            "landed",
+            "diverted"
+        ]
+    },
+    "flights": [
+        {
+            "id": "DM321-2026-11-05",
+            "flight_number": "DM321",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "CDG",
+                "city": "Paris",
+                "city_he": "פריז"
+            },
+            "scheduled_departure": "2026-11-05T07:30+02:00",
+            "scheduled_arrival": "2026-11-05T11:30+01:00",
+            "estimated_departure": null,
+            "estimated_arrival": null,
+            "status": "cancelled",
+            "delay_minutes": 0,
+            "disruption_reason": "Aircraft technical issue",
+            "terminal": "3",
+            "gate": null,
+            "aircraft": "Boeing 737-800",
+            "seats_left": {
+                "economy": 0,
+                "business": 0
+            }
+        },
+        {
+            "id": "DM323-2026-11-05",
+            "flight_number": "DM323",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "CDG",
+                "city": "Paris",
+                "city_he": "פריז"
+            },
+            "scheduled_departure": "2026-11-05T11:15+02:00",
+            "scheduled_arrival": "2026-11-05T15:15+01:00",
+            "estimated_departure": "2026-11-05T11:15+02:00",
+            "estimated_arrival": "2026-11-05T15:15+01:00",
+            "status": "on_time",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "3",
+            "gate": "B6",
+            "aircraft": "Boeing 737-800",
+            "seats_left": {
+                "economy": 6,
+                "business": 0
+            }
+        },
+        {
+            "id": "DM325-2026-11-05",
+            "flight_number": "DM325",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "CDG",
+                "city": "Paris",
+                "city_he": "פריז"
+            },
+            "scheduled_departure": "2026-11-05T13:40+02:00",
+            "scheduled_arrival": "2026-11-05T17:40+01:00",
+            "estimated_departure": "2026-11-05T13:40+02:00",
+            "estimated_arrival": "2026-11-05T17:40+01:00",
+            "status": "on_time",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "3",
+            "gate": "B8",
+            "aircraft": "Airbus A321neo",
+            "seats_left": {
+                "economy": 20,
+                "business": 4
+            }
+        },
+        {
+            "id": "DM327-2026-11-05",
+            "flight_number": "DM327",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "CDG",
+                "city": "Paris",
+                "city_he": "פריז"
+            },
+            "scheduled_departure": "2026-11-05T17:00+02:00",
+            "scheduled_arrival": "2026-11-05T21:00+01:00",
+            "estimated_departure": "2026-11-05T17:00+02:00",
+            "estimated_arrival": "2026-11-05T21:00+01:00",
+            "status": "on_time",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "3",
+            "gate": "C2",
+            "aircraft": "Boeing 737-800",
+            "seats_left": {
+                "economy": 0,
+                "business": 3
+            }
+        },
+        {
+            "id": "DM321-2026-11-06",
+            "flight_number": "DM321",
+            "date": "2026-11-06",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "CDG",
+                "city": "Paris",
+                "city_he": "פריז"
+            },
+            "scheduled_departure": "2026-11-06T07:30+02:00",
+            "scheduled_arrival": "2026-11-06T11:30+01:00",
+            "estimated_departure": "2026-11-06T07:30+02:00",
+            "estimated_arrival": "2026-11-06T11:30+01:00",
+            "status": "on_time",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "3",
+            "gate": null,
+            "aircraft": "Boeing 737-800",
+            "seats_left": {
+                "economy": 30,
+                "business": 6
+            }
+        },
+        {
+            "id": "DM322-2026-11-05",
+            "flight_number": "DM322",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "CDG",
+                "city": "Paris",
+                "city_he": "פריז"
+            },
+            "destination": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "scheduled_departure": "2026-11-05T13:00+01:00",
+            "scheduled_arrival": "2026-11-05T18:30+02:00",
+            "estimated_departure": "2026-11-05T13:00+01:00",
+            "estimated_arrival": "2026-11-05T18:30+02:00",
+            "status": "on_time",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "2E",
+            "gate": "K34",
+            "aircraft": "Boeing 737-800",
+            "seats_left": {
+                "economy": 11,
+                "business": 2
+            }
+        },
+        {
+            "id": "DM315-2026-11-05",
+            "flight_number": "DM315",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "LHR",
+                "city": "London",
+                "city_he": "לונדון"
+            },
+            "scheduled_departure": "2026-11-05T09:00+02:00",
+            "scheduled_arrival": "2026-11-05T12:30+00:00",
+            "estimated_departure": "2026-11-05T13:00+02:00",
+            "estimated_arrival": "2026-11-05T16:30+00:00",
+            "status": "delayed",
+            "delay_minutes": 240,
+            "disruption_reason": "Crew scheduling",
+            "terminal": "3",
+            "gate": "D1",
+            "aircraft": "Boeing 787-9",
+            "seats_left": {
+                "economy": 15,
+                "business": 5
+            }
+        },
+        {
+            "id": "DM317-2026-11-05",
+            "flight_number": "DM317",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "LHR",
+                "city": "London",
+                "city_he": "לונדון"
+            },
+            "scheduled_departure": "2026-11-05T15:30+02:00",
+            "scheduled_arrival": "2026-11-05T19:00+00:00",
+            "estimated_departure": "2026-11-05T15:30+02:00",
+            "estimated_arrival": "2026-11-05T19:00+00:00",
+            "status": "on_time",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "3",
+            "gate": "D3",
+            "aircraft": "Boeing 787-9",
+            "seats_left": {
+                "economy": 9,
+                "business": 1
+            }
+        },
+        {
+            "id": "DM381-2026-11-05",
+            "flight_number": "DM381",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "FCO",
+                "city": "Rome",
+                "city_he": "רומא"
+            },
+            "scheduled_departure": "2026-11-05T11:00+02:00",
+            "scheduled_arrival": "2026-11-05T13:30+01:00",
+            "estimated_departure": "2026-11-05T11:45+02:00",
+            "estimated_arrival": "2026-11-05T14:15+01:00",
+            "status": "delayed",
+            "delay_minutes": 45,
+            "disruption_reason": "Late arrival of incoming aircraft",
+            "terminal": "3",
+            "gate": "B2",
+            "aircraft": "Airbus A321neo",
+            "seats_left": {
+                "economy": 18,
+                "business": 3
+            }
+        },
+        {
+            "id": "DM541-2026-11-05",
+            "flight_number": "DM541",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "ATH",
+                "city": "Athens",
+                "city_he": "אתונה"
+            },
+            "scheduled_departure": "2026-11-05T14:00+02:00",
+            "scheduled_arrival": "2026-11-05T16:00+02:00",
+            "estimated_departure": null,
+            "estimated_arrival": null,
+            "status": "cancelled",
+            "delay_minutes": 0,
+            "disruption_reason": "Weather at destination",
+            "terminal": "3",
+            "gate": null,
+            "aircraft": "Airbus A321neo",
+            "seats_left": {
+                "economy": 0,
+                "business": 0
+            }
+        },
+        {
+            "id": "DM001-2026-11-05",
+            "flight_number": "DM001",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "JFK",
+                "city": "New York",
+                "city_he": "ניו יורק"
+            },
+            "scheduled_departure": "2026-11-05T00:45+02:00",
+            "scheduled_arrival": "2026-11-05T05:45-05:00",
+            "estimated_departure": "2026-11-05T00:45+02:00",
+            "estimated_arrival": "2026-11-05T05:45-05:00",
+            "status": "landed",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "3",
+            "gate": "E1",
+            "aircraft": "Boeing 787-9",
+            "seats_left": {
+                "economy": 0,
+                "business": 0
+            }
+        },
+        {
+            "id": "DM003-2026-11-05",
+            "flight_number": "DM003",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "JFK",
+                "city": "New York",
+                "city_he": "ניו יורק"
+            },
+            "scheduled_departure": "2026-11-05T13:00+02:00",
+            "scheduled_arrival": "2026-11-05T18:00-05:00",
+            "estimated_departure": "2026-11-05T13:00+02:00",
+            "estimated_arrival": "2026-11-05T18:00-05:00",
+            "status": "on_time",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "3",
+            "gate": "E4",
+            "aircraft": "Boeing 787-9",
+            "seats_left": {
+                "economy": 7,
+                "business": 2
+            }
+        },
+        {
+            "id": "DM355-2026-11-05",
+            "flight_number": "DM355",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "FRA",
+                "city": "Frankfurt am Main",
+                "city_he": "פרנקפורט"
+            },
+            "scheduled_departure": "2026-11-05T06:10+02:00",
+            "scheduled_arrival": "2026-11-05T09:40+01:00",
+            "estimated_departure": "2026-11-05T06:10+02:00",
+            "estimated_arrival": "2026-11-05T09:40+01:00",
+            "status": "departed",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "3",
+            "gate": "C5",
+            "aircraft": "Airbus A321neo",
+            "seats_left": {
+                "economy": 0,
+                "business": 0
+            }
+        },
+        {
+            "id": "DM357-2026-11-05",
+            "flight_number": "DM357",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "FRA",
+                "city": "Frankfurt am Main",
+                "city_he": "פרנקפורט"
+            },
+            "scheduled_departure": "2026-11-05T16:20+02:00",
+            "scheduled_arrival": "2026-11-05T19:50+01:00",
+            "estimated_departure": null,
+            "estimated_arrival": null,
+            "status": "cancelled",
+            "delay_minutes": 0,
+            "disruption_reason": "Airport strike at destination",
+            "terminal": "3",
+            "gate": null,
+            "aircraft": "Airbus A321neo",
+            "seats_left": {
+                "economy": 0,
+                "business": 0
+            }
+        },
+        {
+            "id": "DM355-2026-11-06",
+            "flight_number": "DM355",
+            "date": "2026-11-06",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "FRA",
+                "city": "Frankfurt am Main",
+                "city_he": "פרנקפורט"
+            },
+            "scheduled_departure": "2026-11-06T06:10+02:00",
+            "scheduled_arrival": "2026-11-06T09:40+01:00",
+            "estimated_departure": "2026-11-06T06:10+02:00",
+            "estimated_arrival": "2026-11-06T09:40+01:00",
+            "status": "on_time",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "3",
+            "gate": null,
+            "aircraft": "Airbus A321neo",
+            "seats_left": {
+                "economy": 14,
+                "business": 4
+            }
+        },
+        {
+            "id": "DM081-2026-11-05",
+            "flight_number": "DM081",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "BKK",
+                "city": "Bangkok",
+                "city_he": "בנגקוק"
+            },
+            "scheduled_departure": "2026-11-05T22:30+02:00",
+            "scheduled_arrival": "2026-11-06T14:30+07:00",
+            "estimated_departure": "2026-11-06T00:00+02:00",
+            "estimated_arrival": "2026-11-06T16:00+07:00",
+            "status": "delayed",
+            "delay_minutes": 90,
+            "disruption_reason": "Air traffic control restrictions",
+            "terminal": "3",
+            "gate": "E2",
+            "aircraft": "Boeing 787-9",
+            "seats_left": {
+                "economy": 25,
+                "business": 6
+            }
+        },
+        {
+            "id": "DM611-2026-11-05",
+            "flight_number": "DM611",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "SCQ",
+                "city": "Santiago de Compostela",
+                "city_he": "סנטיאגו דה קומפוסטלה"
+            },
+            "scheduled_departure": "2026-11-05T08:20+02:00",
+            "scheduled_arrival": "2026-11-05T12:50+01:00",
+            "estimated_departure": "2026-11-05T08:20+02:00",
+            "estimated_arrival": "2026-11-05T12:50+01:00",
+            "status": "diverted",
+            "delay_minutes": 0,
+            "disruption_reason": "Fog at destination",
+            "terminal": "3",
+            "gate": "C8",
+            "aircraft": "Boeing 737-800",
+            "seats_left": {
+                "economy": 0,
+                "business": 0
+            },
+            "diverted_to": {
+                "code": "MAD",
+                "city": "Madrid",
+                "city_he": "מדריד"
+            }
+        },
+        {
+            "id": "DM391-2026-11-05",
+            "flight_number": "DM391",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "BCN",
+                "city": "Barcelona",
+                "city_he": "ברצלונה"
+            },
+            "scheduled_departure": "2026-11-05T10:40+02:00",
+            "scheduled_arrival": "2026-11-05T14:10+01:00",
+            "estimated_departure": "2026-11-05T10:40+02:00",
+            "estimated_arrival": "2026-11-05T14:10+01:00",
+            "status": "boarding",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "3",
+            "gate": "C3",
+            "aircraft": "Airbus A321neo",
+            "seats_left": {
+                "economy": 2,
+                "business": 0
+            }
+        },
+        {
+            "id": "DM371-2026-11-05",
+            "flight_number": "DM371",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "BER",
+                "city": "Berlin",
+                "city_he": "ברלין"
+            },
+            "scheduled_departure": "2026-11-05T07:00+02:00",
+            "scheduled_arrival": "2026-11-05T10:00+01:00",
+            "estimated_departure": null,
+            "estimated_arrival": null,
+            "status": "cancelled",
+            "delay_minutes": 0,
+            "disruption_reason": "Aircraft technical issue",
+            "terminal": "3",
+            "gate": null,
+            "aircraft": "Boeing 737-800",
+            "seats_left": {
+                "economy": 0,
+                "business": 0
+            }
+        },
+        {
+            "id": "DM373-2026-11-05",
+            "flight_number": "DM373",
+            "date": "2026-11-05",
+            "origin": {
+                "code": "TLV",
+                "city": "Tel Aviv",
+                "city_he": "תל אביב"
+            },
+            "destination": {
+                "code": "BER",
+                "city": "Berlin",
+                "city_he": "ברלין"
+            },
+            "scheduled_departure": "2026-11-05T18:00+02:00",
+            "scheduled_arrival": "2026-11-05T21:00+01:00",
+            "estimated_departure": "2026-11-05T18:00+02:00",
+            "estimated_arrival": "2026-11-05T21:00+01:00",
+            "status": "on_time",
+            "delay_minutes": 0,
+            "disruption_reason": null,
+            "terminal": "3",
+            "gate": "B4",
+            "aircraft": "Boeing 737-800",
+            "seats_left": {
+                "economy": 0,
+                "business": 4
+            }
+        }
+    ]
+}
