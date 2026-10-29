@@ -1,9 +1,12 @@
 import "dotenv/config";
+import { randomUUID } from "crypto";
 import express from "express";
 import cors from "cors";
 import { flightsRepository } from "./repositories/flightsRepository";
-import { isValidFlightNumber, isValidDateFormat, isValidFlightStatus, FLIGHT_STATUSES } from "./validators/flightInput";
+import { isValidFlightNumber, isValidDateFormat } from "./validators/flightInput";
 import { runAgent } from "./agent/agent";
+
+const SESSION_ID_PATTERN = /^[\w-]{1,100}$/;
 
 const app = express();
 app.use(cors());
@@ -34,7 +37,7 @@ app.get("/flight/:number", (req, res) => {
 });
 
 app.post("/chat", async (req, res) => {
-    const { message, booking_number: bookingNumber, date, status } = req.body ?? {};
+    const { message, booking_number: bookingNumber, date, session_id: sessionIdInput } = req.body ?? {};
 
     if (typeof message !== "string" || message.trim().length === 0) {
         return res.status(400).json({ error: "message is required and must be a non-empty string" });
@@ -48,19 +51,26 @@ app.post("/chat", async (req, res) => {
         return res.status(400).json({ error: "date is required and must be in YYYY-MM-DD format" });
     }
 
-    if (typeof status !== "string" || !isValidFlightStatus(status)) {
-        return res.status(400).json({ error: `status is required and must be one of: ${FLIGHT_STATUSES.join(", ")}` });
-    }
+    const matches = flightsRepository.findByFlightNumber(bookingNumber, date);
 
-    if (flightsRepository.findByFlightNumber(bookingNumber, date).length === 0) {
+    if (matches.length === 0) {
         return res.status(404).json({ error: `Booking ${bookingNumber.toUpperCase()} not found on ${date}` });
     }
 
-    console.log(`[chat] booking_number=${bookingNumber} date=${date} status=${status} message=${JSON.stringify(message)}`);
+    // Status is read from our own flight record, never trusted from the client —
+    // otherwise a caller could claim any status for the agent to act on.
+    const status = matches[0].status;
+
+    const sessionId =
+        typeof sessionIdInput === "string" && SESSION_ID_PATTERN.test(sessionIdInput)
+            ? sessionIdInput
+            : randomUUID();
+
+    console.log(`[chat] session_id=${sessionId} booking_number=${bookingNumber} date=${date} status=${status} message=${JSON.stringify(message)}`);
 
     try {
-        const reply = await runAgent(message, bookingNumber, date, status);
-        res.json({ reply });
+        const reply = await runAgent(sessionId, message, bookingNumber, date, status);
+        res.json({ reply, session_id: sessionId });
     } catch (err) {
         console.error("Agent error:", err);
         res.status(500).json({ error: "Failed to process the request" });
