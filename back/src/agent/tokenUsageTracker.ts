@@ -1,4 +1,4 @@
-const MAX_TOKENS_PER_WINDOW = 1;
+const MAX_TOKENS_PER_WINDOW = 50000;
 const WINDOW_MS = 24 * 60 * 60 * 1000;
 const SWEEP_INTERVAL_MS = 60 * 60 * 1000;
 
@@ -24,6 +24,10 @@ function getWindow(key: string): UsageWindow {
 
 export function isOverBudget(key: string): boolean {
   return getWindow(key).tokensUsed >= MAX_TOKENS_PER_WINDOW;
+}
+
+export function getWindowResetAt(key: string): number {
+  return getWindow(key).windowStart + WINDOW_MS;
 }
 
 export function recordUsage(key: string, tokens: number): void {

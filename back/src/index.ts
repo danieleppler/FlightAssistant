@@ -5,7 +5,7 @@ import cors from "cors";
 import { flightsRepository } from "./repositories/flightsRepository";
 import { isValidFlightNumber, isValidDateFormat } from "./validators/flightInput";
 import { runAgent } from "./agent/agent";
-import { isOverBudget } from "./agent/tokenUsageTracker";
+import { isOverBudget, getWindowResetAt } from "./agent/tokenUsageTracker";
 import { detectSuspiciousPrompt } from "./security/promptGuard";
 
 const SESSION_ID_PATTERN = /^[\w-]{1,100}$/;
@@ -64,7 +64,11 @@ app.post("/chat", async (req, res) => {
     const status = matches[0].status;
 
     if (isOverBudget(bookingNumber.toUpperCase())) {
-        return res.status(429).json({ error: "Usage limit reached for this booking. Please try again later." });
+        const resetAt = new Date(getWindowResetAt(bookingNumber.toUpperCase())).toISOString();
+        return res.status(429).json({
+            error: "Usage limit reached for this booking. Please try again later.",
+            reset_at: resetAt,
+        });
     }
 
     const sessionId =
