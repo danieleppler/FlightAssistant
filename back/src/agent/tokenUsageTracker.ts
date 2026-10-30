@@ -1,4 +1,4 @@
-const MAX_TOKENS_PER_WINDOW = 50_000;
+const MAX_TOKENS_PER_WINDOW = 1;
 const WINDOW_MS = 24 * 60 * 60 * 1000;
 const SWEEP_INTERVAL_MS = 60 * 60 * 1000;
 

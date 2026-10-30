@@ -1,0 +1,160 @@
+.flight-lookup {
+  max-width: 480px;
+  margin: 48px auto;
+  padding: 0 16px;
+  text-align: left;
+}
+
+.flight-lookup .subtitle {
+  margin-bottom: 24px;
+}
+
+.flight-lookup form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.flight-lookup .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.flight-lookup label {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.flight-lookup input {
+  font: inherit;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.flight-lookup input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.flight-lookup input[aria-invalid="true"] {
+  border-color: #e05252;
+}
+
+.flight-lookup .submit {
+  font: inherit;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  color: var(--accent);
+  background: var(--accent-bg);
+  cursor: pointer;
+}
+
+.flight-lookup .submit:hover:not(:disabled) {
+  border-color: var(--accent-border);
+}
+
+.flight-lookup .submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.flight-lookup .error {
+  margin-top: 16px;
+  color: #e05252;
+}
+
+.flight-lookup .results {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flight-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.flight-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.flight-number {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.status {
+  font-size: 13px;
+  text-transform: capitalize;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--code-bg);
+}
+
+.status-cancelled,
+.status-diverted {
+  color: #e05252;
+}
+
+.status-delayed {
+  color: #c08a00;
+}
+
+.status-on_time,
+.status-landed,
+.status-boarding,
+.status-departed {
+  color: #2a9d5c;
+}
+
+.route {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-h);
+  margin-bottom: 8px;
+}
+
+.route .arrow {
+  color: var(--text);
+}
+
+.times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.disruption {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.chat-cta {
+  font: inherit;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--accent-border);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.chat-cta:hover {
+  background: var(--accent-bg);
+}

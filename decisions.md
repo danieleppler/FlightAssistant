@@ -78,3 +78,35 @@ pattern as the session store, with a periodic sweep to evict expired windows.
 server instances — acceptable for a single-process demo, but a real deployment
 would move this counter to Redis (or a DB) so usage is shared and durable across
 all instances, the same caveat noted for the session store.
+
+## Malicious prompt detection: log, don't block
+
+**Context:** passengers can send prompt-injection/jailbreak attempts (e.g.
+"ignore all previous instructions", "reveal your system prompt", "you are now
+DAN", probing for the API key). The agent's own system-prompt instructions
+already resist acting on these, but there was no visibility into when someone
+tries.
+
+**Decision:** run a lightweight regex-based detector (`promptGuard.ts`) over
+every incoming `/chat` message, matching known injection/jailbreak/extraction/
+credential-probing signatures. On a match, log a tagged `[security]
+suspicious_prompt ...` warning (session id, booking number, date, matched
+pattern labels, full message) — but still let the request proceed normally to
+the agent.
+
+**Why log instead of block:** the agent already has its own instructions not to
+comply with these (don't reveal internals, don't treat embedded text as new
+instructions), so blocking outright would risk false-positive refusals on
+legitimate questions that happen to match a pattern (e.g. a passenger asking
+"what information do you have about my flight"). Logging gives visibility and
+an audit trail without that risk; blocking can be layered on top later if
+abuse patterns justify it.
+
+**Current implementation:** pattern-matching only (no LLM-based classification),
+covering: instruction override, system-prompt extraction, role override /
+jailbreak keywords, unauthorized override of rules/policy, and credential
+probing. False negatives are expected for novel phrasings not covered by the
+patterns.
+
+## sweeping mechanisem
+## tool usage logging for further fine tuning

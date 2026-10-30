@@ -6,6 +6,7 @@ import { flightsRepository } from "./repositories/flightsRepository";
 import { isValidFlightNumber, isValidDateFormat } from "./validators/flightInput";
 import { runAgent } from "./agent/agent";
 import { isOverBudget } from "./agent/tokenUsageTracker";
+import { detectSuspiciousPrompt } from "./security/promptGuard";
 
 const SESSION_ID_PATTERN = /^[\w-]{1,100}$/;
 
@@ -70,6 +71,13 @@ app.post("/chat", async (req, res) => {
         typeof sessionIdInput === "string" && SESSION_ID_PATTERN.test(sessionIdInput)
             ? sessionIdInput
             : randomUUID();
+
+    const suspiciousPatterns = detectSuspiciousPrompt(message);
+    if (suspiciousPatterns.length > 0) {
+        console.warn(
+            `[security] suspicious_prompt session_id=${sessionId} booking_number=${bookingNumber} date=${date} patterns=${JSON.stringify(suspiciousPatterns)} message=${JSON.stringify(message)}`
+        );
+    }
 
     console.log(`[chat] session_id=${sessionId} booking_number=${bookingNumber} date=${date} status=${status} message=${JSON.stringify(message)}`);
 
