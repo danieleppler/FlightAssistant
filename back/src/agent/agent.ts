@@ -41,6 +41,13 @@ export async function runAgent(
 
     recordUsage(bookingNumber.toUpperCase(), response.usage.input_tokens + response.usage.output_tokens);
 
+    if (response.stop_reason === "max_tokens") {
+      // Truncated mid-answer — don't persist a half-finished reply as a completed
+      // turn, and don't hand the passenger a sentence that just stops.
+      console.log(`[agent] session=${sessionId} response truncated at max_tokens; not persisting`);
+      return "I wasn't able to finish that response. Could you ask again, maybe a bit more specifically?";
+    }
+
     if (response.stop_reason !== "tool_use") {
       messages.push({ role: "assistant", content: response.content });
       saveHistory(sessionId, trimHistory(messages));

@@ -6,7 +6,7 @@ import "./FlightLookup.css";
 const FLIGHT_NUMBER_PATTERN = /^[0-9a-zA-Z]+$/;
 
 interface FlightLookupProps {
-  onFlightFound?: (flight: Flight, date: string, trigger: HTMLElement) => void;
+  onFlightFound?: (flight: Flight, date: string) => void;
 }
 
 function formatDateTime(value: string | null): string {
@@ -111,11 +111,7 @@ export function FlightLookup({ onFlightFound }: FlightLookupProps) {
               </div>
               {flight.disruption_reason && <p className="disruption">{flight.disruption_reason}</p>}
 
-              <button
-                type="button"
-                className="chat-cta"
-                onClick={(e) => onFlightFound?.(flight, flight.date, e.currentTarget)}
-              >
+              <button type="button" className="chat-cta" onClick={() => onFlightFound?.(flight, flight.date)}>
                 Ask about this flight
               </button>
 

@@ -50,11 +50,13 @@ request. Please try again.") instead of looping forever or returning nothing.
 The dangling, incomplete round is not persisted to session history, so the next
 turn resumes from the last known-good state rather than a broken one.
 
-**Not yet implemented:** a dedicated fallback for the model running out of
-*output* tokens mid-answer (`stop_reason: "max_tokens"`), as opposed to running
-out of tool-use rounds. Today that case isn't specially detected — a truncated
-answer would currently be returned to the passenger as-is. This is a known gap,
-not yet addressed.
+The same treatment now covers `stop_reason: "max_tokens"` — the model running
+out of *output* tokens mid-answer, as opposed to running out of tool-use rounds.
+That case is checked before the normal "final answer" branch: the truncated
+content is never persisted to history (a half-finished turn would otherwise
+look like a completed one on the next request) and the passenger gets an
+explicit "I wasn't able to finish that response, ask again" instead of a
+reply that just stops mid-sentence.
 
 ## Per-client token usage throttling
 
@@ -110,3 +112,32 @@ patterns.
 
 ## sweeping mechanisem
 ## tool usage logging for further fine tuning
+
+## Frontend chat UX decisions
+
+The chat widget surfaces the booking-level token-budget reset time to the passenger instead of a generic "try again later": `/chat`'s `429` response now includes `reset_at` (computed from the usage window's `windowStart` + `WINDOW_MS`), and the widget shows it inline ("You can ask again on ...") and disables the input until then, so a throttled passenger knows exactly when they're unblocked instead of retrying blindly. The chat panel is sized to the full viewport height, minus a small margin on each side, rather than a short fixed-height popup, since a flight-disruption conversation can run long and a capped height forced constant scrolling inside a tiny box. The message box is a textarea that auto-resizes vertically as the passenger types — growing with the content instead of staying single-line and cropping or scrolling horizontally — up to a max height, past which it scrolls internally.
+
+## Considered: push live flight-status updates to the client
+
+**Context:** explored adding a feature where the client gets notified the moment a flight's status changes (e.g. `on_time` → `cancelled`), inspired by the pattern of airline apps surfacing real-time status via lock-screen/OS-level live updates. The mechanism considered was Server-Sent Events (SSE): a one-way, long-lived HTTP connection the server can push an event down at any time, with no polling needed on the client's part — a good fit here since only the server needs to push (the client already sends chat messages via a normal `POST /chat`, never needing to push back over the same channel), unlike a WebSocket's two-way channel, which would be capability this app doesn't use.
+
+**Decision:** not implemented. A plain website can only deliver an SSE push while the tab stays open and the JS keeps running — close the tab, lock the phone, switch apps, and the connection dies. That doesn't actually replicate "notify me even when I'm not looking at it," which is the whole point of the pattern this was inspired by; it only helps for the narrower case of a passenger who keeps the chat open and watches it live.
+
+**Why not Web Push instead:** the genuine web equivalent — one that survives the tab being closed — is Web Push (Service Worker + Push API, server posting to a push subscription endpoint whenever status changes). It's real additional infrastructure (service worker, a notification-permission prompt, server-side subscription storage) and comes with a platform caveat: Safari on iOS only supports Web Push for a site installed as a PWA, not a plain browser tab, so it can't fully match a native app's no-install notification behavior anyway.
+
+**Future:** this is better suited to a native/mobile app, where OS-level push notifications (or an iOS Live Activity, matching the lock-screen pattern this was inspired by) are the natural fit and don't carry the "only works while a tab is open" limitation a website has.
+
+## Considered: preventing unlimited/abusive usage
+
+**Context:** reviewed what's actually exposed once this is deployed. `cors()` is unrestricted (defaults to `Access-Control-Allow-Origin: *`), and the only existing abuse control is the per-`booking_number` token-usage throttle (`tokenUsageTracker.ts`). CORS itself turned out not to be a security boundary at all here — it's enforced by the browser, not the server, so it only affects whether a *browser page's* JS can read the response back; the request still reaches and runs on the server regardless, and a non-browser caller (curl, a script, another server) ignores CORS entirely since it never had a page origin to restrict in the first place. The per-booking throttle has a gap of its own: nothing caps total spend *across* bookings, so cycling through many different valid `flight_number`+`date` pairs from `flights.json` gets a fresh budget each time.
+
+**Decision:** not yet implemented — documenting the options considered and their trade-offs.
+
+**Options considered, ranked by protection-per-effort:**
+1. A global token/cost ceiling across all bookings in the rolling window, on top of the existing per-booking one — caps worst-case spend regardless of how abuse is spread across fake bookings. Highest priority of the five.
+2. IP-based rate limiting (e.g. `express-rate-limit`) on `/chat` — cheap, catches casual scripted abuse, but IPs are shared (false positives for legitimate users behind the same NAT/VPN) and trivially rotatable — raises the bar, doesn't remove the threat.
+3. Restrict CORS to the deployed frontend's origin — free, stops *other websites'* browser JS from calling the API, but (per above) does nothing against a non-browser caller.
+4. A shared secret header sent by the frontend on every request — filters out generic bots that don't bother inspecting the frontend, but the secret ships inside the public SPA bundle (visible in any browser's network tab), so it's not a real barrier against anyone who looked first.
+5. Real user accounts/login — the only way to tie usage to an actual identity rather than "knows a flight number + date." A genuine scope change for an intentionally account-less, informational-only demo; not worth it here.
+
+**Why not auth today:** knowing a flight number + date is the same trust model a real airline's public flight-status lookup uses — it isn't meant to be a secret, so the actual gap isn't "anyone can look up a flight," it's "nothing caps total cost if someone automates many lookups." Option 1 targets that directly; 2 and 3 are worthwhile cheap additions on top; 4 and 5 aren't a good fit for this project's scope.
