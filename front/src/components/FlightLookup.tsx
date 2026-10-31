@@ -45,12 +45,12 @@ export function FlightLookup({ onFlightFound }: FlightLookupProps) {
       const result = await fetchFlight(trimmedNumber, date || undefined);
       const list = Array.isArray(result) ? result : [result];
       const latest = list.length > 1 ? [list.reduce((a, b) => (a.date > b.date ? a : b))] : list;
-      setTimeout(() => {
-        setFlights(latest);
-      }, 400)
+
+      setFlights(latest);
+      setLoading(false);
+
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
-    } finally {
       setLoading(false);
     }
   }
@@ -86,14 +86,14 @@ export function FlightLookup({ onFlightFound }: FlightLookupProps) {
         </div>
 
         <button type="submit" className="submit" disabled={!trimmedNumber || loading}>
-          {loading ? "Looking up…" : "Check status"}
+          Check status
         </button>
       </form>
 
       {loading && (
         <div className="lookup-pending" role="status">
+          <span className="lookup-pending-label">Searching your flight…</span>
           <img src={planeLoading} alt="" className="pending-photo" />
-          <span className="sr-only">Looking up flight…</span>
         </div>
       )}
 
