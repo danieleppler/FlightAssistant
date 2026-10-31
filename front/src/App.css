@@ -1,0 +1,8 @@
+/* On mobile the chat takes over the full screen; hide the card underneath via CSS
+   (not JS state) so there's no frame where it can show through during the
+   widget's keyboard-driven resize. */
+@media (max-width: 480px) {
+  body:has(.chat-widget) .flight-lookup {
+    display: none;
+  }
+}
