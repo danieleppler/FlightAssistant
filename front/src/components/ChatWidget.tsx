@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { ApiError, sendChatMessage } from "../lib/api";
 import type { Flight } from "../types/flight";
 import type { ChatMessage } from "../types/chat";
@@ -109,7 +109,7 @@ export function ChatWidget({ flight }: ChatWidgetProps) {
     }
   }, [minimized]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const vv = window.visualViewport;
     const el = widgetRef.current;
     if (!vv || !el || minimized) return;
