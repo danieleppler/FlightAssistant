@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { ApiError, fetchFlight } from "../lib/api";
 import type { Flight } from "../types/flight";
+import planeLoading from "../assets/plane-loading.jpg";
 import "./FlightLookup.css";
 
 const FLIGHT_NUMBER_PATTERN = /^[0-9a-zA-Z]+$/;
@@ -44,7 +45,9 @@ export function FlightLookup({ onFlightFound }: FlightLookupProps) {
       const result = await fetchFlight(trimmedNumber, date || undefined);
       const list = Array.isArray(result) ? result : [result];
       const latest = list.length > 1 ? [list.reduce((a, b) => (a.date > b.date ? a : b))] : list;
-      setFlights(latest);
+      setTimeout(() => {
+        setFlights(latest);
+      }, 400)
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
     } finally {
@@ -86,6 +89,13 @@ export function FlightLookup({ onFlightFound }: FlightLookupProps) {
           {loading ? "Looking up…" : "Check status"}
         </button>
       </form>
+
+      {loading && (
+        <div className="lookup-pending" role="status">
+          <img src={planeLoading} alt="" className="pending-photo" />
+          <span className="sr-only">Looking up flight…</span>
+        </div>
+      )}
 
       {error && (
         <p className="error" role="alert">

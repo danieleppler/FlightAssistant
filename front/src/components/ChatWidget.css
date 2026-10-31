@@ -2,8 +2,9 @@
   position: fixed;
   top: 16px;
   right: 16px;
-  bottom: 16px;
   width: 340px;
+  height: calc(100vh - 32px);
+  height: calc(100dvh - 32px);
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -12,6 +13,7 @@
   box-shadow: var(--shadow);
   overflow: hidden;
   z-index: 50;
+  transition: height 0.2s ease;
 }
 
 .chat-pill {
@@ -61,8 +63,15 @@
     top: 12px;
     right: 12px;
     left: 12px;
-    bottom: 12px;
     width: auto;
+    height: calc(100vh - 24px);
+    height: calc(100dvh - 24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-widget {
+    transition: none;
   }
 }
 

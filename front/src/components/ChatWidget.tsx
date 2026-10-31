@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { ApiError, sendChatMessage } from "../lib/api";
 import type { Flight } from "../types/flight";
 import type { ChatMessage } from "../types/chat";
@@ -62,7 +62,6 @@ export function ChatWidget({ flight }: ChatWidgetProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const pillRef = useRef<HTMLButtonElement>(null);
-  const widgetRef = useRef<HTMLDivElement>(null);
   const prevMessageCountRef = useRef(messages.length);
   const revealedIdsRef = useRef<Set<string>>(new Set());
   const sendingRef = useRef(false);
@@ -107,27 +106,6 @@ export function ChatWidget({ flight }: ChatWidgetProps) {
     } else {
       textareaRef.current?.focus();
     }
-  }, [minimized]);
-
-  useLayoutEffect(() => {
-    const vv = window.visualViewport;
-    const el = widgetRef.current;
-    if (!vv || !el || minimized) return;
-
-    function reposition() {
-      if (!el || !vv) return;
-      const margin = window.innerWidth <= 480 ? 12 : 16;
-      el.style.top = `${vv.offsetTop + margin}px`;
-      el.style.height = `${vv.height - margin * 2}px`;
-    }
-
-    reposition();
-    vv.addEventListener("resize", reposition);
-    vv.addEventListener("scroll", reposition);
-    return () => {
-      vv.removeEventListener("resize", reposition);
-      vv.removeEventListener("scroll", reposition);
-    };
   }, [minimized]);
 
   useEffect(() => {
@@ -206,7 +184,7 @@ export function ChatWidget({ flight }: ChatWidgetProps) {
   }
 
   return (
-    <div ref={widgetRef} className="chat-widget" role="dialog" aria-label={`Chat about flight ${bookingNumber}`}>
+    <div className="chat-widget" role="dialog" aria-label={`Chat about flight ${bookingNumber}`}>
       <header className="chat-widget-header">
         <svg className="chat-header-avatar" viewBox="0 0 40 40" aria-hidden="true">
           <circle cx="20" cy="20" r="20" fill="var(--accent)" />

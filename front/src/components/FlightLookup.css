@@ -63,6 +63,46 @@
   cursor: not-allowed;
 }
 
+.lookup-pending {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pending-photo {
+  width: 72px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  animation: pending-photo-soar 1.8s ease-in-out infinite;
+}
+
+@keyframes pending-photo-soar {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) rotate(4deg) scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pending-photo {
+    animation: none;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
 .flight-lookup .error {
   margin-top: 16px;
   color: #e05252;
