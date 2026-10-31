@@ -43,7 +43,8 @@ export function FlightLookup({ onFlightFound }: FlightLookupProps) {
     try {
       const result = await fetchFlight(trimmedNumber, date || undefined);
       const list = Array.isArray(result) ? result : [result];
-      setFlights(list);
+      const latest = list.length > 1 ? [list.reduce((a, b) => (a.date > b.date ? a : b))] : list;
+      setFlights(latest);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
     } finally {
