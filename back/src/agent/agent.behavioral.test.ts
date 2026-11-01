@@ -59,7 +59,7 @@ describe.skipIf(!RUN)("runAgent (behavioral, live API)", () => {
     async () => {
       // DM611 / 2026-11-05: diverted to MAD — policy says assistant_can_rebook: false
       const reply = await ask("Can you rebook me on another flight?", "DM611", "2026-11-05", "diverted");
-      expect(reply.toLowerCase()).toMatch(/service agent|can('|no)t rebook|human agent/);
+      expect(reply.toLowerCase()).toMatch(/service agent|can('|no)t rebook|human agent/ |);
     },
     TIMEOUT_MS
   );

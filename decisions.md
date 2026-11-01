@@ -20,7 +20,7 @@ conversation about the same booking.
 across calls. History is kept in-memory on the server, keyed by `session_id`,
 with a TTL sweep to evict idle sessions.
 
-## Architecture: hybrid of LLM agent + deterministic backend logic
+## Business-critical computation is never done by the LLM
 
 **Decision:** Business rules (rebooking eligibility, compensation bands, refund
 thresholds, etc.) are never left to the LLM to compute or recall. They live as

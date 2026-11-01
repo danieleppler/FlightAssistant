@@ -22,12 +22,12 @@
         "cancelled": {
             "description": "The original flight will not operate.",
             "counts_as_disruption": true,
-            "assistant_can_rebook": true
+            "assistant_can_rebook": false
         },
         "delayed": {
             "description": "The original flight operates late. Counts as a disruption only from significant_delay_minutes.",
             "counts_as_disruption": "when delay_minutes >= significant_delay_minutes",
-            "assistant_can_rebook": true
+            "assistant_can_rebook": false
         },
         "diverted": {
             "description": "The flight landed at a different airport. Onward travel is arranged by a service agent at the diversion airport.",
@@ -39,7 +39,7 @@
         "none": {
             "description": "No disruption. The passenger wants to change flights voluntarily.",
             "counts_as_disruption": false,
-            "assistant_can_rebook": true
+            "assistant_can_rebook": false
         }
     },
     "disruption_reasons": {
