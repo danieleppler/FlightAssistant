@@ -30,6 +30,7 @@ export interface Flight {
 export interface IFlightsRepository {
   findByFlightNumber(flightNumber: string, date?: string): Flight[];
   findByRoute(originCode: string, destinationCode: string): Flight[];
+  findByDate(date: string): Flight[];
 }
 
 const flightsData: { flights: Flight[] } = JSON.parse(
@@ -48,6 +49,10 @@ class FlightsRepository implements IFlightsRepository {
     return flightsData.flights.filter(
       (f) => f.origin.code === originCode && f.destination.code === destinationCode
     );
+  }
+
+  findByDate(date: string): Flight[] {
+    return flightsData.flights.filter((f) => f.date === date);
   }
 }
 

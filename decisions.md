@@ -56,7 +56,7 @@ That case is checked before the normal "final answer" branch: the truncated
 content is never persisted to history (a half-finished turn would otherwise
 look like a completed one on the next request) and the passenger gets an
 explicit "I wasn't able to finish that response, ask again" instead of a
-reply that just stops mid-sentence.
+reply that just stops mid-sentence.???
 
 ## Per-client token usage throttling
 
@@ -111,7 +111,7 @@ probing. False negatives are expected for novel phrasings not covered by the
 patterns.
 
 ## sweeping mechanisem
-## tool usage logging for further fine tuning
+
 
 ## Frontend chat UX decisions
 

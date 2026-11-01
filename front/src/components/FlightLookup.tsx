@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { ApiError, fetchFlight } from "../lib/api";
+import { ApiError, fetchFlight, fetchFlightsByDate } from "../lib/api";
 import type { Flight } from "../types/flight";
 import planeLoading from "../assets/plane-loading.jpg";
 import "./FlightLookup.css";
@@ -29,10 +29,17 @@ export function FlightLookup({ onFlightFound }: FlightLookupProps) {
   const trimmedNumber = flightNumber.trim();
   const isValidNumber = FLIGHT_NUMBER_PATTERN.test(trimmedNumber);
 
+  const canSubmit = (trimmedNumber.length > 0 || date.length > 0) && (!trimmedNumber || isValidNumber);
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
-    if (!isValidNumber) {
+    if (!trimmedNumber && !date) {
+      setError("Enter a flight number, a date, or both.");
+      return;
+    }
+
+    if (trimmedNumber && !isValidNumber) {
       setError("Flight number must contain only letters and digits.");
       return;
     }
@@ -42,13 +49,15 @@ export function FlightLookup({ onFlightFound }: FlightLookupProps) {
     setFlights(null);
 
     try {
-      const result = await fetchFlight(trimmedNumber, date || undefined);
-      const list = Array.isArray(result) ? result : [result];
-      const latest = list.length > 1 ? [list.reduce((a, b) => (a.date > b.date ? a : b))] : list;
-
-      setFlights(latest);
+      if (trimmedNumber) {
+        const result = await fetchFlight(trimmedNumber, date || undefined);
+        const list = Array.isArray(result) ? result : [result];
+        const latest = list.length > 1 ? [list.reduce((a, b) => (a.date > b.date ? a : b))] : list;
+        setFlights(latest);
+      } else {
+        setFlights(await fetchFlightsByDate(date));
+      }
       setLoading(false);
-
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
       setLoading(false);
@@ -58,11 +67,11 @@ export function FlightLookup({ onFlightFound }: FlightLookupProps) {
   return (
     <section className="flight-lookup">
       <h1>Track your flight</h1>
-      <p className="subtitle">Enter your flight number to check its status.</p>
+      <p className="subtitle">Search by flight number, by date, or both.</p>
 
       <form onSubmit={handleSubmit} noValidate>
         <div className="field">
-          <label htmlFor="flight-number">Flight number</label>
+          <label htmlFor="flight-number">Flight number (optional)</label>
           <input
             id="flight-number"
             type="text"
@@ -85,7 +94,7 @@ export function FlightLookup({ onFlightFound }: FlightLookupProps) {
           />
         </div>
 
-        <button type="submit" className="submit" disabled={!trimmedNumber || loading}>
+        <button type="submit" className="submit" disabled={!canSubmit || loading}>
           Check status
         </button>
       </form>

@@ -109,6 +109,35 @@ export function ChatWidget({ flight }: ChatWidgetProps) {
   }, [minimized]);
 
   useEffect(() => {
+    // On mobile the keyboard's native "scroll the focused input into view" behavior
+    // drags the whole page (and this fixed-position widget with it) up and back down.
+    // Locking body scroll gives it nothing to scroll, so that jump never starts.
+    if (minimized || window.innerWidth > 480) return;
+
+    const { body } = document;
+    const scrollY = window.scrollY;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+      overflow: body.style.overflow,
+    };
+
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+
+    return () => {
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.width = prev.width;
+      body.style.overflow = prev.overflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, [minimized]);
+
+  useEffect(() => {
     const newCount = messages.length - prevMessageCountRef.current;
     prevMessageCountRef.current = messages.length;
     if (minimized && newCount > 0) {

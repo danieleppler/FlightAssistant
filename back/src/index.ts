@@ -16,6 +16,22 @@ app.use(express.json());
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
+app.get("/flights", (req, res) => {
+    const date = req.query.date;
+
+    if (typeof date !== "string" || !isValidDateFormat(date)) {
+        return res.status(400).json({ error: "Date must be in YYYY-MM-DD format" });
+    }
+
+    const flights = flightsRepository.findByDate(date);
+
+    if (flights.length === 0) {
+        return res.status(404).json({ error: `No flights found on ${date}` });
+    }
+
+    res.json(flights);
+});
+
 app.get("/flight/:number", (req, res) => {
     const flightNumber = req.params.number;
     const date = req.query.date;

@@ -31,6 +31,15 @@ export async function fetchFlight(flightNumber: string, date?: string): Promise<
   return res.json();
 }
 
+export async function fetchFlightsByDate(date: string): Promise<Flight[]> {
+  const url = new URL(`${API_BASE_URL}/flights`);
+  url.searchParams.set("date", date);
+
+  const res = await fetch(url);
+  if (!res.ok) throw await toApiError(res);
+  return res.json();
+}
+
 export interface ChatReply {
   reply: string;
   session_id: string;
